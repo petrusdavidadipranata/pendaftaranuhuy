@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Form Pendaftaran</title>
+    <style>
+        @import url('//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css');
+        .info-msg,
+        .success-msg,
+        .warning-msg,
+        .error-msg {
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 3px 3px 3px 3px;
+        }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: url('https://img.freepik.com/premium-photo/mars-planet-style-concept-space-fantastic-planet-surface-rocky-mountains-background-against-night-sky-with-stars-shining-bright-horizon-generative-ai_1423-10194.jpg') no-repeat center center fixed;
+            backdrop-filter: blur(3px);
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .form-container {
+            background: rgba(255, 255, 255, 0.4);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+        }
+
+        label {
+            font-weight: 700;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input, select {
+            border: 1px solid #333;
+            border-radius: 9px;
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: transparent;
+            width: 100%;
+            box-sizing: border-box;
+        }
+        h2 {
+            color: #ffff;
+            text-shadow: 2px 2px 5px #333;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            font-weight: bold;
+            border: none;
+            margin-bottom: 10px;
+            cursor: pointer;
+            width: 100%;
+            border-radius: 8px;
+        }
+
+        select option {
+            background-color: #f0f0f0;
+            color: #333;
+        }
+        
+        /* Mengubah warna latar belakang dan teks pada option yang dipilih */
+        select option:checked {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .success-msg {
+            color: #270;
+            background-color: #DFF2BF;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <audio id="audioPlay" autoplay>
+        <source src="{{ url_for('static', filename='audio/sound.mp3') }}" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+    <div class="form-container">
+        <h2 style="text-align: center;">Form Pendaftaran</h2>
+        <div class="success-msg">
+            <i class="fa fa-check"></i>
+            This is a success message.
+        </div>          
+        <form id="regisForm" action="{{ url_for('submit') }}" method="post">
+            <label for="nama">Nama:</label>
+            <input type="text" id="nama" name="nama" placeholder="Masukan nama" required><br>
+            <label for="stasi">Asal Stasi:</label>
+            <select id="stasi" name="stasi" required>
+                <option hidden>Pilih Stasi</option>
+                <option value="JOJOG">Jojog</option>
+                <option value="TULUSREJO">Tulusrejo</option>
+                <option value="BATANGHARI">Batanghari</option>
+                <option value="SELOREJO">Selorejo</option>
+                <option value="BALEKENCONO">Balekencono</option>
+                <option value="SAMBIKARTO">Sambikarto</option>
+            </select><br>
+
+            <button type="submit" onclick="submit()">Daftar</button>
+        </form>
+    </div>
+    <script>
+        window.onload = function() {
+            var audio = document.getElementById('audioPlay');
+            audio.play();
+        };
+        function playAudio(){
+            audio.play();
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,97 @@
+<!--         
+        } -->
+
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Data Registrasi</title>
+            <style>
+                body {
+                    font-family: Arial, sans-serif;
+                    background-color: #f0f0f0;
+                    padding: 20px;
+                    width: 100%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
+                }
+                h1 {
+                    text-align: center;
+                }
+                table {
+                    width: 70%;
+                    margin: auto;
+                    border-collapse: collapse;
+                    margin-bottom: 20px;
+                }
+                table, th, td {
+                    border: 1px solid #ddd;
+                }
+                th, td {
+                    padding: 10px;
+                    text-align: left;
+                }
+                th {
+                    background-color: #f2f2f2;
+                }
+                .separator {
+                    border-top: 2px solid #000000;
+                    margin-top: 10px;
+                    margin-bottom: 10px;
+                }
+                .total-count {
+                    margin-top: 20px;
+                    text-align: center;
+                }
+                a {
+                    background-color: rgb(197, 14, 14);
+                    border-radius: 4px;
+                    padding: 8px;
+                    color: #ffff;
+                    text-decoration: none;
+                    text-align: center;
+                }
+        
+                a:hover{
+                    background-color: rgb(140, 10, 10);
+                }
+            </style>
+        </head>
+        <body>
+            <h2>Halo min!!!!</h2>
+            <h1>Data Registrasi</h1>
+            <table>
+                <thead>
+                    <tr>
+                        <th>Nama</th>
+                        <th>Asal Stasi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for asal_stasi, entries in data.items() %}
+                        {% for entry in entries %}
+                        <tr>
+                            <td>{{ entry['Nama'] }}</td>
+                            <td>{{ entry['Asal Stasi'] }}</td>
+                        </tr>
+                        {% endfor %}
+                        <tr>
+                            <td colspan="2">
+                                <strong>{{ asal_stasi }}:</strong> {{ counts[asal_stasi] }} pendaftar
+                            </td>
+                        </tr>
+                        <tr class="separator">
+                            <td colspan="2"></td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            <div class="total-count">
+                <p><strong>Total Pendaftar:</strong> {{ counts['Total'] }}</p>
+            </div>
+            <a href="{{ url_for('logout') }}">Logout</a>
+        </body>
+        </html>
+        
