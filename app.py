@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for, session
 from flask_bcrypt import Bcrypt
-from openpyxl import load_workbook
+import csv
 
 app = Flask(__name__)
 app.secret_key = 'secret_key'  # Ganti dengan secret key yang lebih aman untuk produksi
@@ -22,27 +22,25 @@ def check_login(username, password):
             return True, users[username]['role']
     return False, None
 
-# Fungsi untuk membaca data dari file Excel
-def read_excel_data():
+# Fungsi untuk membaca data dari file CSV
+def read_csv_data():
     data = {}
     counts = {'Total': 0}
     try:
-        wb = load_workbook('registrasi.xlsx')
-        ws = wb.active
-        for row in ws.iter_rows(values_only=True):
-            if row[0] == 'Nama':  # Skip header row
-                continue
-            entry = dict(zip(['Nama', 'Asal Stasi'], row))
-            asal_stasi = entry['Asal Stasi']
-            counts['Total'] += 1
-            if asal_stasi in data:
-                data[asal_stasi].append(entry)
-                counts[asal_stasi] += 1
-            else:
-                data[asal_stasi] = [entry]
-                counts[asal_stasi] = 1
+        with open('registrasi.csv', newline='') as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                nama = row['Nama']
+                asal_stasi = row['Asal Stasi']
+                if asal_stasi in data:
+                    data[asal_stasi].append({'Nama': nama, 'Asal Stasi': asal_stasi})
+                    counts[asal_stasi] += 1
+                else:
+                    data[asal_stasi] = [{'Nama': nama, 'Asal Stasi': asal_stasi}]
+                    counts[asal_stasi] = 1
+                counts['Total'] += 1
     except Exception as e:
-        print(f"Error reading Excel file: {str(e)}")
+        print(f"Error reading CSV file: {str(e)}")
     return data, counts
 
 # Route untuk halaman absensi
@@ -50,7 +48,7 @@ def read_excel_data():
 def absensi():
     if 'logged_in' in session and session['logged_in']:
         try:
-            data, counts = read_excel_data()
+            data, counts = read_csv_data()
             return render_template('data_regis.html', data=data, counts=counts)
         except Exception as e:
             print(f"Error: {str(e)}")
@@ -58,9 +56,11 @@ def absensi():
     else:
         return redirect(url_for('login'))
 
-@app.route('/succes')
+# Route untuk halaman sukses
+@app.route('/success')
 def success():
     return render_template('success.html')
+
 # Route untuk halaman utama (form pendaftaran)
 @app.route('/')
 def index():
@@ -74,18 +74,13 @@ def submit():
         'Asal Stasi': request.form['stasi'],
     }
     try:
-        # Simpan ke file Excel
-        wb = load_workbook('registrasi.xlsx')
-        ws = wb.active
-        ws.append([data['Nama'], data['Asal Stasi']])
-        wb.save('registrasi.xlsx')
-        return '''
-        <script>
-            window.location.href = "/succes";
-        </script>
-        '''
+        with open('registrasi.csv', 'a', newline='') as csvfile:
+            fieldnames = ['Nama', 'Asal Stasi']
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writerow(data)
+        return redirect(url_for('success'))
     except Exception as e:
-        print(f"Error saving to Excel file: {str(e)}")
+        print(f"Error saving to CSV file: {str(e)}")
         return f'Error: {str(e)}'
 
 # Route untuk login
